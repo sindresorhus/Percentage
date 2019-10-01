@@ -2,11 +2,19 @@ import Foundation
 
 /**
 ```
+import Percent
+
 10% + 5.5%
 //=> 15.5%
 
+-10% / 2
+//=> -5%
+
 (40% + 93%) * 3
 //=> 399%
+
+30% > 25%
+//=> true
 
 50%.of(200)
 //=> 100
@@ -22,6 +30,9 @@ Percent(fraction: 0.5)
 
 10%.rawValue
 //=> 10
+
+print("\(1%)")
+//=> "1%"
 ```
 */
 public struct Percent: Hashable, Codable {
