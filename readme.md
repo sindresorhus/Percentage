@@ -61,6 +61,23 @@ print("\(1%)")
 
 The type conforms to `Hashable`, `Codable`, `RawRepresentable`, `Comparable`, and supports all the arithmetic operators.
 
+### Codable
+
+The percent value is encoded as a single value:
+
+```swift
+struct Foo: Codable {
+	let alpha: Percent
+}
+
+let foo = Foo(alpha: 1%)
+let data = try! JSONEncoder().encode(foo)
+let string = String(data: data, encoding: .utf8)!
+
+print(string)
+//=> "{\"alpha\":1}"
+```
+
 
 ## FAQ
 

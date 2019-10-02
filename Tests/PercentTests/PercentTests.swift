@@ -75,4 +75,16 @@ final class PercentTests: XCTestCase {
 		divide /= 2
 		XCTAssertEqual(divide, 0.5%)
 	}
+
+	func testCodable() {
+		struct Foo: Codable {
+			let alpha: Percent
+		}
+
+		let foo = Foo(alpha: 1%)
+		let data = try! JSONEncoder().encode(foo)
+		let string = String(data: data, encoding: .utf8)!
+
+		XCTAssertEqual(string, "{\"alpha\":1}")
+	}
 }
