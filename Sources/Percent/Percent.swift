@@ -131,7 +131,15 @@ extension Percent: Comparable {
 }
 
 extension Percent: CustomStringConvertible {
-	public var description: String { "\(String(format: "%g", rawValue))%" }
+	internal static var formatter: NumberFormatter = {
+		let formatter = NumberFormatter()
+		formatter.numberStyle = .percent
+		return formatter
+	}()
+
+	public var description: String {
+		Self.formatter.string(for: fraction) ?? "\(String(format: "%g", rawValue))%"
+	}
 }
 
 // swiftlint:disable static_operator

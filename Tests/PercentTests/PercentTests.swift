@@ -6,7 +6,6 @@ final class PercentTests: XCTestCase {
 		XCTAssertEqual(10%, 10%)
 		XCTAssertEqual(-10% / 2, -5%)
 		XCTAssertEqual(1.1%.rawValue, 1.1)
-		XCTAssertEqual("\(1%)", "1%")
 		XCTAssertEqual(10% + 5.5%, 15.5%)
 		XCTAssertEqual((40% + 93%) * 3, 399%)
 		XCTAssertEqual(50%.of(200), 100)
@@ -21,7 +20,6 @@ final class PercentTests: XCTestCase {
 
 		XCTAssertEqual(Percent(fraction: 0.5), 50%)
 		XCTAssertEqual(50%.fraction, 0.5)
-		XCTAssertEqual("\(50%)", "50%")
 
 		XCTAssertTrue(30% > 25%)
 	}
@@ -86,5 +84,33 @@ final class PercentTests: XCTestCase {
 		let string = String(data: data, encoding: .utf8)!
 
 		XCTAssertEqual(string, "{\"alpha\":1}")
+	}
+
+	func testStringConversion() {
+		let formatter = NumberFormatter()
+		formatter.numberStyle = .percent
+
+		formatter.locale = Locale(identifier: "ru")
+		Percent.formatter = formatter
+		XCTAssertEqual("\(50%)", formatter.string(for: 50%.fraction))
+		XCTAssertEqual("\(1%)", formatter.string(for: 1%.fraction))
+
+		formatter.locale = Locale(identifier: "tr")
+		Percent.formatter = formatter
+		XCTAssertEqual("\(50%)", formatter.string(for: 50%.fraction))
+		XCTAssertEqual("\(1%)", formatter.string(for: 1%.fraction))
+
+		formatter.locale = Locale(identifier: "eu")
+		Percent.formatter = formatter
+		XCTAssertEqual("\(50%)", formatter.string(for: 50%.fraction))
+		XCTAssertEqual("\(1%)", formatter.string(for: 1%.fraction))
+
+		formatter.locale = Locale(identifier: "ar")
+		Percent.formatter = formatter
+		XCTAssertEqual("\(50%)", formatter.string(for: 50%.fraction))
+		XCTAssertEqual("\(1%)", formatter.string(for: 1%.fraction))
+
+		formatter.locale = Locale.current
+		Percent.formatter = formatter
 	}
 }
