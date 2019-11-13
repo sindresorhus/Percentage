@@ -15,7 +15,7 @@ Makes percentages more readable and type-safe, for example, for APIs that curren
 SwiftPM:
 
 ```swift
-.package(url: "https://github.com/sindresorhus/Percent", from: "0.1.1")
+.package(url: "https://github.com/sindresorhus/Percent", from: "0.2.0")
 ```
 
 Or just copy-paste it.
