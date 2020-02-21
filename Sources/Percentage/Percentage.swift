@@ -13,6 +13,9 @@ import Percentage
 (40% + 93%) * 3
 //=> 399%
 
+50% * 50%
+//=> 25%
+
 30% > 25%
 //=> true
 
@@ -181,7 +184,7 @@ extension Percentage: Numeric {
 	}
 
 	public static func * (lhs: Self, rhs: Self) -> Self {
-		self.init(lhs.rawValue * rhs.rawValue)
+		self.init(fraction: lhs.fraction * rhs.fraction)
 	}
 
 	public static func *= (lhs: inout Self, rhs: Self) {
@@ -201,7 +204,7 @@ extension Percentage: Numeric {
 
 extension Percentage {
 	public static func / (lhs: Self, rhs: Self) -> Self {
-		self.init(lhs.rawValue / rhs.rawValue)
+		self.init(fraction: lhs.fraction / rhs.fraction)
 	}
 
 	public static func /= (lhs: inout Self, rhs: Self) {
