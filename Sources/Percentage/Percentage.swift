@@ -3,7 +3,7 @@ import CoreGraphics
 
 /**
 ```
-import Percent
+import Percentage
 
 10% + 5.5%
 //=> 15.5%
@@ -20,10 +20,10 @@ import Percent
 50%.of(200)
 //=> 100
 
-Percent(50)
+Percentage(50)
 //=> 50%
 
-Percent(fraction: 0.5)
+Percentage(fraction: 0.5)
 //=> 50%
 
 50%.fraction
@@ -36,9 +36,9 @@ print("\(1%)")
 //=> "1%"
 ```
 */
-public struct Percent: Hashable, Codable {
+public struct Percentage: Hashable, Codable {
 	/**
-	The raw percent number.
+	The raw percentage number.
 
 	```
 	10%.rawValue
@@ -48,7 +48,7 @@ public struct Percent: Hashable, Codable {
 	public let rawValue: Double
 
 	/**
-	Get the percent as a fraction.
+	Get the percentage as a fraction.
 
 	```
 	50%.fraction
@@ -58,48 +58,48 @@ public struct Percent: Hashable, Codable {
 	public var fraction: Double { rawValue / 100 }
 
 	/**
-	Create a `Percent` from a `Double`.
+	Create a `Percentage` from a `Double`.
 
 	```
-	Percent(50.5)
+	Percentage(50.5)
 	//=> 50.5%
 	```
 	*/
-	public init(_ percent: Double) {
-		self.rawValue = percent
+	public init(_ percentage: Double) {
+		self.rawValue = percentage
 	}
 
 	/**
-	Create a `Percent` from a `CGFloat`.
+	Create a `Percentage` from a `CGFloat`.
 
 	```
 	let cgFloat: CGFloat = 50.5
-	Percent(cgFloat)
+	Percentage(cgFloat)
 	//=> 50.5%
 	```
 	*/
-	public init(_ percent: CGFloat) {
-		self.rawValue = Double(percent)
+	public init(_ percentage: CGFloat) {
+		self.rawValue = Double(percentage)
 	}
 
 	/**
-	Create a `Percent` from an `Int`.
+	Create a `Percentage` from an `Int`.
 
 	```
 	let int = 50
-	Percent(int)
+	Percentage(int)
 	//=> 50%
 	```
 	*/
-	public init(_ percent: Int) {
-		self.rawValue = Double(percent)
+	public init(_ percentage: Int) {
+		self.rawValue = Double(percentage)
 	}
 
 	/**
-	Create a `Percent` from a fraction.
+	Create a `Percentage` from a fraction.
 
 	```
-	Percent(fraction: 0.5)
+	Percentage(fraction: 0.5)
 	//=> "50%"
 	```
 	*/
@@ -108,7 +108,7 @@ public struct Percent: Hashable, Codable {
 	}
 
 	/**
-	Returns how much the percent of the given value is.
+	Returns how much the percentage of the given value is.
 
 	```
 	50%.of(200)
@@ -118,19 +118,19 @@ public struct Percent: Hashable, Codable {
 	public func of(_ value: Double) -> Double { value * rawValue / 100 }
 }
 
-extension Percent: RawRepresentable {
+extension Percentage: RawRepresentable {
 	public init(rawValue: Double) {
 		self.rawValue = rawValue
 	}
 }
 
-extension Percent: Comparable {
+extension Percentage: Comparable {
 	public static func < (lhs: Self, rhs: Self) -> Bool {
 		lhs.rawValue < rhs.rawValue
 	}
 }
 
-extension Percent: CustomStringConvertible {
+extension Percentage: CustomStringConvertible {
 	internal static var formatter: NumberFormatter = {
 		let formatter = NumberFormatter()
 		formatter.numberStyle = .percent
@@ -145,22 +145,22 @@ extension Percent: CustomStringConvertible {
 // swiftlint:disable static_operator
 prefix operator -
 
-public prefix func - (percent: Percent) -> Percent {
-	return Percent(-percent.rawValue)
+public prefix func - (percentage: Percentage) -> Percentage {
+	return Percentage(-percentage.rawValue)
 }
 
 postfix operator %
 
-public postfix func % (value: Double) -> Percent {
-	return Percent(value)
+public postfix func % (value: Double) -> Percentage {
+	return Percentage(value)
 }
 
-public postfix func % (value: Int) -> Percent {
-	return Percent(Double(value))
+public postfix func % (value: Int) -> Percentage {
+	return Percentage(Double(value))
 }
 // swiftlint:enable static_operator
 
-extension Percent {
+extension Percentage {
 	public static func + (lhs: Self, rhs: Self) -> Self {
 		Self(lhs.rawValue + rhs.rawValue)
 	}

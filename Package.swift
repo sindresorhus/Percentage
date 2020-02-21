@@ -2,23 +2,23 @@
 import PackageDescription
 
 let package = Package(
-	name: "Percent",
+	name: "Percentage",
 	products: [
 		.library(
-			name: "Percent",
+			name: "Percentage",
 			targets: [
-				"Percent"
+				"Percentage"
 			]
 		),
 	],
 	targets: [
 		.target(
-			name: "Percent"
+			name: "Percentage"
 		),
 		.testTarget(
-			name: "PercentTests",
+			name: "PercentageTests",
 			dependencies: [
-				"Percent"
+				"Percentage"
 			]
 		)
 	]

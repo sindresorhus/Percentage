@@ -1,4 +1,4 @@
-# Percent [![Build Status](https://travis-ci.com/sindresorhus/Percent.svg?branch=master)](https://travis-ci.com/sindresorhus/Percent)
+# Percentage [![Build Status](https://travis-ci.com/sindresorhus/Percentage.svg?branch=master)](https://travis-ci.com/sindresorhus/Percentage)
 
 > A percentage type for Swift
 
@@ -15,7 +15,7 @@ Makes percentages more readable and type-safe, for example, for APIs that curren
 SwiftPM:
 
 ```swift
-.package(url: "https://github.com/sindresorhus/Percent", from: "0.2.0")
+.package(url: "https://github.com/sindresorhus/Percentage", from: "0.2.0")
 ```
 
 Or just copy-paste it.
@@ -23,10 +23,10 @@ Or just copy-paste it.
 
 ## Usage
 
-See the [source](Sources/Percent/Percent.swift) for docs.
+See the [source](Sources/Percentage/Percentage.swift) for docs.
 
 ```swift
-import Percent
+import Percentage
 
 10% + 5.5%
 //=> 15.5%
@@ -43,10 +43,10 @@ import Percent
 50%.of(200)
 //=> 100
 
-Percent(50)
+Percentage(50)
 //=> 50%
 
-Percent(fraction: 0.5)
+Percentage(fraction: 0.5)
 //=> 50%
 
 50%.fraction
@@ -63,11 +63,11 @@ The type conforms to `Hashable`, `Codable`, `RawRepresentable`, `Comparable`, an
 
 ### Codable
 
-The percent value is encoded as a single value:
+The percentage value is encoded as a single value:
 
 ```swift
 struct Foo: Codable {
-	let alpha: Percent
+	let alpha: Percentage
 }
 
 let foo = Foo(alpha: 1%)
