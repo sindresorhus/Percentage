@@ -9,17 +9,15 @@ Makes percentages more readable and type-safe, for example, for APIs that curren
 +.opacity(45%)
 ```
 
-
 ## Install
 
-SwiftPM:
+Swift Package Manager:
 
 ```swift
 .package(url: "https://github.com/sindresorhus/Percentage", from: "0.2.0")
 ```
 
 Or just copy-paste it.
-
 
 ## Usage
 
@@ -59,7 +57,7 @@ print("\(1%)")
 //=> "1%"
 ```
 
-The type conforms to `Hashable`, `Codable`, `RawRepresentable`, `Comparable`, and supports all the arithmetic operators.
+The type conforms to `Hashable`, `Codable`, `RawRepresentable`, `Comparable`, `ExpressibleByFloatLiteral`, `ExpressibleByIntegerLiteral`, `Numeric`, and supports all the arithmetic operators.
 
 ### Codable
 
@@ -78,13 +76,11 @@ print(string)
 //=> "{\"alpha\":1}"
 ```
 
-
 ## FAQ
 
 #### Can you support Carthage and CocoaPods?
 
-No, but you can still use SwiftPM for this package even though you mainly use Carthage or CocoaPods.
-
+No, but you can still use Swift Package Manager for this package even though you mainly use Carthage or CocoaPods.
 
 ## Related
 

@@ -146,84 +146,82 @@ extension Percentage: CustomStringConvertible {
 prefix operator -
 
 public prefix func - (percentage: Percentage) -> Percentage {
-	return Percentage(-percentage.rawValue)
+	Percentage(-percentage.rawValue)
 }
 
 postfix operator %
 
 public postfix func % (value: Double) -> Percentage {
-	return Percentage(value)
+	Percentage(value)
 }
 
 public postfix func % (value: Int) -> Percentage {
-	return Percentage(Double(value))
+	Percentage(Double(value))
 }
 // swiftlint:enable static_operator
 
-extension Percentage {
+extension Percentage: ExpressibleByFloatLiteral {
+	public typealias FloatLiteralType = Double
+
+	public init(floatLiteral value: FloatLiteralType) {
+		self.rawValue = value
+	}
+}
+
+extension Percentage: ExpressibleByIntegerLiteral {
+	public typealias IntegerLiteralType = Double
+
+	public init(integerLiteral value: IntegerLiteralType) {
+		self.rawValue = value
+	}
+}
+
+extension Percentage: Numeric {
+	public typealias Magnitude = Double.Magnitude
+
+	public static var zero: Self { 0 }
+
 	public static func + (lhs: Self, rhs: Self) -> Self {
-		Self(lhs.rawValue + rhs.rawValue)
+		self.init(lhs.rawValue + rhs.rawValue)
 	}
 
-	public static func + (lhs: Self, rhs: Double) -> Self {
-		Self(lhs.rawValue + rhs)
-	}
-
-	public static func - (lhs: Self, rhs: Self) -> Self {
-		Self(lhs.rawValue - rhs.rawValue)
-	}
-
-	public static func - (lhs: Self, rhs: Double) -> Self {
-		Self(lhs.rawValue - rhs)
-	}
-
-	public static func * (lhs: Self, rhs: Self) -> Self {
-		Self(lhs.rawValue * rhs.rawValue)
-	}
-
-	public static func * (lhs: Self, rhs: Double) -> Self {
-		Self(lhs.rawValue * rhs)
-	}
-
-	public static func / (lhs: Self, rhs: Self) -> Self {
-		Self(lhs.rawValue / rhs.rawValue)
-	}
-
-	public static func / (lhs: Self, rhs: Double) -> Self {
-		Self(lhs.rawValue / rhs)
-	}
-
-	// swiftlint:disable shorthand_operator
 	public static func += (lhs: inout Self, rhs: Self) {
 		lhs = lhs + rhs
 	}
 
-	public static func += (lhs: inout Self, rhs: Double) {
-		lhs = lhs + rhs
+	public static func - (lhs: Self, rhs: Self) -> Self {
+		self.init(lhs.rawValue - rhs.rawValue)
 	}
 
 	public static func -= (lhs: inout Self, rhs: Self) {
 		lhs = lhs - rhs
 	}
 
-	public static func -= (lhs: inout Self, rhs: Double) {
-		lhs = lhs - rhs
+	public static func * (lhs: Self, rhs: Self) -> Self {
+		self.init(lhs.rawValue * rhs.rawValue)
 	}
 
 	public static func *= (lhs: inout Self, rhs: Self) {
 		lhs = lhs * rhs
 	}
 
-	public static func *= (lhs: inout Self, rhs: Double) {
-		lhs = lhs * rhs
+	public var magnitude: Magnitude { rawValue.magnitude }
+
+	public init?<T>(exactly source: T) where T: BinaryInteger {
+		guard let value = Double(exactly: source) else {
+			return nil
+		}
+
+		self.init(value)
+	}
+}
+
+extension Percentage {
+	public static func / (lhs: Self, rhs: Self) -> Self {
+		self.init(lhs.rawValue / rhs.rawValue)
 	}
 
 	public static func /= (lhs: inout Self, rhs: Self) {
 		lhs = lhs / rhs
 	}
-
-	public static func /= (lhs: inout Self, rhs: Double) {
-		lhs = lhs / rhs
-	}
-	// swiftlint:enable shorthand_operator
 }
