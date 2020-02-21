@@ -15,8 +15,14 @@ final class PercentageTests: XCTestCase {
 		let int = 50
 		XCTAssertEqual(Percentage(int), 50%)
 
+		let int8: Int8 = 50
+		XCTAssertEqual(Percentage(int8), 50%)
+
 		let cgFloat: CGFloat = 50.5
 		XCTAssertEqual(Percentage(cgFloat), 50.5%)
+
+		let float: Float = 50.5
+		XCTAssertEqual(Percentage(float), 50.5%)
 
 		XCTAssertEqual(Percentage(fraction: 0.5), 50%)
 		XCTAssertEqual(50%.fraction, 0.5)

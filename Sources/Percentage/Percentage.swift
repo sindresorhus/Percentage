@@ -1,5 +1,4 @@
 import Foundation
-import CoreGraphics
 
 /**
 ```
@@ -58,19 +57,7 @@ public struct Percentage: Hashable, Codable {
 	public var fraction: Double { rawValue / 100 }
 
 	/**
-	Create a `Percentage` from a `Double`.
-
-	```
-	Percentage(50.5)
-	//=> 50.5%
-	```
-	*/
-	public init(_ percentage: Double) {
-		self.rawValue = percentage
-	}
-
-	/**
-	Create a `Percentage` from a `CGFloat`.
+	Create a `Percentage` from a `BinaryFloatingPoint`, for example, `Double` or `CGFloat`.
 
 	```
 	let cgFloat: CGFloat = 50.5
@@ -78,12 +65,12 @@ public struct Percentage: Hashable, Codable {
 	//=> 50.5%
 	```
 	*/
-	public init(_ percentage: CGFloat) {
+	public init<T>(_ percentage: T) where T: BinaryFloatingPoint {
 		self.rawValue = Double(percentage)
 	}
 
 	/**
-	Create a `Percentage` from an `Int`.
+	Create a `Percentage` from a `BinaryInteger`, for example, `Int`.
 
 	```
 	let int = 50
@@ -91,7 +78,7 @@ public struct Percentage: Hashable, Codable {
 	//=> 50%
 	```
 	*/
-	public init(_ percentage: Int) {
+	public init<T>(_ percentage: T) where T: BinaryInteger {
 		self.rawValue = Double(percentage)
 	}
 
@@ -161,17 +148,13 @@ public postfix func % (value: Int) -> Percentage {
 // swiftlint:enable static_operator
 
 extension Percentage: ExpressibleByFloatLiteral {
-	public typealias FloatLiteralType = Double
-
-	public init(floatLiteral value: FloatLiteralType) {
+	public init(floatLiteral value: Double) {
 		self.rawValue = value
 	}
 }
 
 extension Percentage: ExpressibleByIntegerLiteral {
-	public typealias IntegerLiteralType = Double
-
-	public init(integerLiteral value: IntegerLiteralType) {
+	public init(integerLiteral value: Double) {
 		self.rawValue = value
 	}
 }
