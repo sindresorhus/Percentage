@@ -106,6 +106,18 @@ public struct Percentage: Hashable, Codable {
 	```
 	*/
 	public func of(_ value: Double) -> Double { value * rawValue / 100 }
+    
+    /**
+    Returns a random value within the specified range.
+
+    ```
+    Percent.random(in: 10%...20%)
+    //=> can be 10%, 11%, 12%, 19.98%, etc.
+    ```
+     */
+    static func random(in range: ClosedRange<Percentage>) -> Percentage {
+        return Percentage(fraction: Double.random(in: range.lowerBound.fraction...range.upperBound.fraction))
+    }
 }
 
 extension Percentage: RawRepresentable {
