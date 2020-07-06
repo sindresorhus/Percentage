@@ -14,7 +14,7 @@ Makes percentages more readable and type-safe, for example, for APIs that curren
 Add the following to `Package.swift`:
 
 ```swift
-.package(url: "https://github.com/sindresorhus/Percentage", from: "0.2.0")
+.package(url: "https://github.com/sindresorhus/Percentage", from: "1.0.0")
 ```
 
 [Or add the package in Xcode.](https://developer.apple.com/documentation/xcode/adding_package_dependencies_to_your_app)
