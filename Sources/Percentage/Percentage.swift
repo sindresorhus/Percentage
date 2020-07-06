@@ -115,8 +115,8 @@ public struct Percentage: Hashable, Codable {
 	//=> Can be 10%, 11%, 12%, 19.98%, etc.
 	```
 	*/
-	static func random(in range: ClosedRange<Percentage>) -> Percentage {
-		Percentage(fraction: Double.random(in: range.lowerBound.fraction...range.upperBound.fraction))
+	public static func random(in range: ClosedRange<Self>) -> Self {
+		self.init(fraction: .random(in: range.lowerBound.fraction...range.upperBound.fraction))
 	}
 }
 
