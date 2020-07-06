@@ -1,4 +1,4 @@
-# Percentage [![Build Status](https://travis-ci.com/sindresorhus/Percentage.svg?branch=master)](https://travis-ci.com/sindresorhus/Percentage)
+# Percentage [![Build Status](https://travis-ci.com/sindresorhus/Percentage.svg?branch=master)](https://travis-ci.com/github/sindresorhus/Percentage)
 
 > A percentage type for Swift
 
@@ -58,6 +58,9 @@ Percentage(fraction: 0.5)
 
 print("\(1%)")
 //=> "1%"
+
+Percent.random(in: 10%...20%)
+//=> "14.3%"
 ```
 
 The type conforms to `Hashable`, `Codable`, `RawRepresentable`, `Comparable`, `ExpressibleByFloatLiteral`, `ExpressibleByIntegerLiteral`, `Numeric`, and supports all the arithmetic operators.

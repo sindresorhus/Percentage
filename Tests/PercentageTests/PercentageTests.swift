@@ -121,4 +121,10 @@ final class PercentageTests: XCTestCase {
 		formatter.locale = Locale.current
 		Percentage.formatter = formatter
 	}
+
+	func testRandom() {
+		let range = 10%...20%
+		let random = Percentage.random(in: range)
+		XCTAssertTrue(range.contains(random))
+	}
 }

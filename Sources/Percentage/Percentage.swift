@@ -36,6 +36,9 @@ Percentage(fraction: 0.5)
 
 print("\(1%)")
 //=> "1%"
+
+Percent.random(in: 10%...20%)
+//=> "14.3%"
 ```
 */
 public struct Percentage: Hashable, Codable {
@@ -106,7 +109,9 @@ public struct Percentage: Hashable, Codable {
 	```
 	*/
 	public func of(_ value: Double) -> Double { value * rawValue / 100 }
-    
+}
+
+extension Percentage {
 	/**
 	Returns a random value within the given range.
 
