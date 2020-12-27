@@ -101,14 +101,40 @@ public struct Percentage: Hashable, Codable {
 	}
 
 	/**
-	Returns how much the percentage of the given value is.
+	Returns how much the percentage of the given integer value is.
 
 	```
 	50%.of(200)
 	//=> 100
 	```
 	*/
-	public func of(_ value: Double) -> Double { value * rawValue / 100 }
+	public func of<Value: BinaryInteger>(_ value: Value) -> Value {
+		value * Value(rawValue.rounded()) / 100
+	}
+
+	/**
+	Returns how much the percentage of the given integer value is exactly, represented as floating-point.
+
+	```
+	50%.of(201) as Double
+	//=> 100.5
+	```
+	*/
+	public func of<Value: BinaryInteger, ReturnValue: BinaryFloatingPoint>(_ value: Value) -> ReturnValue {
+		ReturnValue(value) * ReturnValue(rawValue) / 100
+	}
+
+	/**
+	Returns how much the percentage of the given floating-point value is.
+
+	```
+	50%.of(250.5)
+	//=> 125.25
+	```
+	*/
+	public func of<Value: BinaryFloatingPoint>(_ value: Value) -> Value {
+		value * Value(rawValue) / 100
+	}
 }
 
 extension Percentage {

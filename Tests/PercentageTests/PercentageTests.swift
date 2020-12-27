@@ -32,6 +32,14 @@ final class PercentageTests: XCTestCase {
 		XCTAssertTrue(30% > 25%)
 	}
 
+	func testPercentageOf() {
+		XCTAssertEqual(50%.of(200), 100)
+		XCTAssertEqual(50%.of(201), 100)
+		XCTAssertEqual(50%.of(201) as Double, 100.5)
+		XCTAssertEqual(50%.of(250.5), 125.25)
+		XCTAssertEqual(25%.of(Float64(200)), Float64(50))
+	}
+
 	func testArithmetics() {
 		XCTAssertEqual(1% + 1%, 2%)
 		XCTAssertEqual(1% - 1%, 0%)
