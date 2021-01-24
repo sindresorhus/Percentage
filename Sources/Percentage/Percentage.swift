@@ -215,6 +215,7 @@ extension Percentage: Numeric {
 	}
 
 	public static func += (lhs: inout Self, rhs: Self) {
+		// swiftlint:disable:next shorthand_operator
 		lhs = lhs + rhs
 	}
 
@@ -223,6 +224,7 @@ extension Percentage: Numeric {
 	}
 
 	public static func -= (lhs: inout Self, rhs: Self) {
+		// swiftlint:disable:next shorthand_operator
 		lhs = lhs - rhs
 	}
 
@@ -231,6 +233,7 @@ extension Percentage: Numeric {
 	}
 
 	public static func *= (lhs: inout Self, rhs: Self) {
+		// swiftlint:disable:next shorthand_operator
 		lhs = lhs * rhs
 	}
 
@@ -251,6 +254,7 @@ extension Percentage {
 	}
 
 	public static func /= (lhs: inout Self, rhs: Self) {
+		// swiftlint:disable:next shorthand_operator
 		lhs = lhs / rhs
 	}
 }

@@ -1,4 +1,4 @@
-# Percentage [![Build Status](https://travis-ci.com/sindresorhus/Percentage.svg?branch=master)](https://travis-ci.com/github/sindresorhus/Percentage)
+# Percentage
 
 > A percentage type for Swift
 
