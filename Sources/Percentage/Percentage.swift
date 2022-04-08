@@ -63,6 +63,30 @@ public struct Percentage: Hashable, Codable {
 	public var fraction: Double { rawValue / 100 }
 
 	/**
+	Clamp the percentage to a value between 0% and 100%.
+
+	```
+	110%.clampedZeroToHundred
+	//=> 100%
+
+	-1%.clampedZeroToHundred
+	//=> 0%
+
+	60%.clampedZeroToHundred
+	//=> 60%
+	```
+	*/
+	public var clampedZeroToHundred: Percentage {
+		if rawValue > 100 {
+			return 100%
+		} else if rawValue < 0 {
+			return 0%
+		} else {
+			return self
+		}
+	}
+
+	/**
 	Create a `Percentage` from a `BinaryFloatingPoint`, for example, `Double` or `CGFloat`.
 
 	```
