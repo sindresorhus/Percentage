@@ -76,7 +76,7 @@ public struct Percentage: Hashable, Codable {
 	//=> 60%
 	```
 	*/
-	public var clampedZeroToHundred: Percentage {
+	public var clampedZeroToHundred: Self {
 		if rawValue > 100 {
 			return 100%
 		} else if rawValue < 0 {
