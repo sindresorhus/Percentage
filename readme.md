@@ -56,6 +56,9 @@ Percentage(fraction: 0.5)
 10%.rawValue
 //=> 10
 
+110%.clampedZeroToHundred
+//=> 100%
+
 print("\(1%)")
 //=> "1%"
 
