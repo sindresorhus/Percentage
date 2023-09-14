@@ -78,11 +78,11 @@ public struct Percentage: Hashable, Codable {
 	*/
 	public var clampedZeroToHundred: Self {
 		if rawValue > 100 {
-			return 100%
+			100%
 		} else if rawValue < 0 {
-			return 0%
+			0%
 		} else {
-			return self
+			self
 		}
 	}
 
@@ -95,7 +95,7 @@ public struct Percentage: Hashable, Codable {
 	//=> 50.5%
 	```
 	*/
-	public init<T>(_ percentage: T) where T: BinaryFloatingPoint {
+	public init(_ percentage: some BinaryFloatingPoint) {
 		self.rawValue = Double(percentage)
 	}
 
@@ -108,7 +108,7 @@ public struct Percentage: Hashable, Codable {
 	//=> 50%
 	```
 	*/
-	public init<T>(_ percentage: T) where T: BinaryInteger {
+	public init(_ percentage: some BinaryInteger) {
 		self.rawValue = Double(percentage)
 	}
 
@@ -144,7 +144,7 @@ public struct Percentage: Hashable, Codable {
 	//=> 100.5
 	```
 	*/
-	public func of<Value: BinaryInteger, ReturnValue: BinaryFloatingPoint>(_ value: Value) -> ReturnValue {
+	public func of<ReturnValue: BinaryFloatingPoint>(_ value: some BinaryInteger) -> ReturnValue {
 		ReturnValue(value) * ReturnValue(rawValue) / 100
 	}
 
@@ -189,7 +189,7 @@ extension Percentage: Comparable {
 
 extension Percentage: CustomStringConvertible {
 	// Note: It's a `var` for testing.
-	internal static var formatter: NumberFormatter = {
+	static var formatter: NumberFormatter = {
 		let formatter = NumberFormatter()
 		formatter.numberStyle = .percent
 		return formatter
@@ -264,7 +264,7 @@ extension Percentage: Numeric {
 
 	public var magnitude: Magnitude { rawValue.magnitude }
 
-	public init?<T>(exactly source: T) where T: BinaryInteger {
+	public init?(exactly source: some BinaryInteger) {
 		guard let value = Double(exactly: source) else {
 			return nil
 		}

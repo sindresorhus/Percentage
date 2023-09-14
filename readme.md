@@ -93,9 +93,7 @@ No, but you can still use Swift Package Manager for this package even though you
 
 ## Related
 
-- [Regex](https://github.com/sindresorhus/Regex) - Swifty regular expressions
 - [Defaults](https://github.com/sindresorhus/Defaults) - Swifty and modern UserDefaults
-- [Preferences](https://github.com/sindresorhus/Preferences) - Add a preferences window to your macOS app
 - [KeyboardShortcuts](https://github.com/sindresorhus/KeyboardShortcuts) - Add user-customizable global keyboard shortcuts to your macOS app
 - [LaunchAtLogin](https://github.com/sindresorhus/LaunchAtLogin) - Add "Launch at Login" functionality to your macOS app
-- [More…](https://github.com/search?q=user%3Asindresorhus+language%3Aswift)
+- [More…](https://github.com/search?q=user%3Asindresorhus+language%3Aswift+archived%3Afalse&type=repositories)
