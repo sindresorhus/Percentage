@@ -7,6 +7,9 @@ jobs:
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v2
+      - uses: SwiftyLab/setup-swift@latest
+        with:
+          development: true
       - run: swift test --parallel
   lint:
     runs-on: ubuntu-latest
