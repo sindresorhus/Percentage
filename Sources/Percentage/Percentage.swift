@@ -41,7 +41,7 @@ Percent.random(in: 10%...20%)
 //=> "14.3%"
 ```
 */
-public struct Percentage: Hashable, Codable {
+public struct Percentage: Hashable, Codable, Sendable, RawRepresentable {
 	/**
 	The raw percentage number.
 
@@ -60,7 +60,7 @@ public struct Percentage: Hashable, Codable {
 	//=> 0.5
 	```
 	*/
-	public var fraction: Double { rawValue / 100 }
+	public let fraction: Double
 
 	/**
 	Clamp the percentage to a value between 0% and 100%.
@@ -96,7 +96,7 @@ public struct Percentage: Hashable, Codable {
 	```
 	*/
 	public init<T>(_ percentage: T) where T: BinaryFloatingPoint {
-		self.rawValue = Double(percentage)
+		self.init(rawValue: Double(percentage))
 	}
 
 	/**
@@ -109,7 +109,7 @@ public struct Percentage: Hashable, Codable {
 	```
 	*/
 	public init<T>(_ percentage: T) where T: BinaryInteger {
-		self.rawValue = Double(percentage)
+		self.init(rawValue: Double(percentage))
 	}
 
 	/**
@@ -121,7 +121,12 @@ public struct Percentage: Hashable, Codable {
 	```
 	*/
 	public init(fraction: Double) {
-		self.rawValue = fraction * 100
+		self.init(rawValue: fraction * 100)
+	}
+	
+	public init(rawValue: Double) {
+		self.rawValue = rawValue
+		self.fraction = rawValue / 100
 	}
 
 	/**
@@ -175,12 +180,6 @@ extension Percentage {
 	}
 }
 
-extension Percentage: RawRepresentable {
-	public init(rawValue: Double) {
-		self.rawValue = rawValue
-	}
-}
-
 extension Percentage: Comparable {
 	public static func < (lhs: Self, rhs: Self) -> Bool {
 		lhs.rawValue < rhs.rawValue
@@ -189,7 +188,7 @@ extension Percentage: Comparable {
 
 extension Percentage: CustomStringConvertible {
 	// Note: It's a `var` for testing.
-	internal static var formatter: NumberFormatter = {
+	nonisolated(unsafe) internal static var formatter: NumberFormatter = {
 		let formatter = NumberFormatter()
 		formatter.numberStyle = .percent
 		return formatter
@@ -220,13 +219,13 @@ public postfix func % (value: Int) -> Percentage {
 
 extension Percentage: ExpressibleByFloatLiteral {
 	public init(floatLiteral value: Double) {
-		self.rawValue = value
+		self.init(rawValue: value)
 	}
 }
 
 extension Percentage: ExpressibleByIntegerLiteral {
 	public init(integerLiteral value: Double) {
-		self.rawValue = value
+		self.init(rawValue: value)
 	}
 }
 
