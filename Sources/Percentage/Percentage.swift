@@ -67,6 +67,10 @@ Percentage.change(from: 100, to: 150)
 33.333%.formatted(decimalPlaces: 1)
 //=> "33.3%"
 
+// With locale (macOS 12.0+/iOS 15.0+)
+50%.formatted(decimalPlaces: 1, locale: Locale(languageCode: .french))
+//=> "50,0 %"
+
 print("\(1%)")
 //=> "1%"
 
@@ -240,6 +244,7 @@ extension Percentage {
 		guard total != 0 else {
 			return self.init(0)
 		}
+
 		return self.init(Double(value) / Double(total) * 100)
 	}
 
@@ -460,16 +465,28 @@ extension Percentage {
 
 	50%.formatted(decimalPlaces: 2)
 	//=> "50.00%"
+	
+	// With specific locale (macOS 12.0+/iOS 15.0+)
+	50.5%.formatted(decimalPlaces: 1, locale: Locale(languageCode: .french))
+	//=> "50,5 %" (French formatting)
 	```
 	*/
-	public func formatted(decimalPlaces: Int) -> String {
-		let formatter = NumberFormatter()
-		formatter.numberStyle = .percent
-		formatter.minimumFractionDigits = decimalPlaces
-		formatter.maximumFractionDigits = decimalPlaces
-		formatter.locale = Locale(identifier: "en_US")
-		formatter.usesGroupingSeparator = false
-		return formatter.string(for: fraction) ?? "\(String(format: "%g", rawValue))%"
+	public func formatted(decimalPlaces: Int, locale: Locale = .current) -> String {
+		if #available(macOS 12.0, iOS 15.0, tvOS 15.0, watchOS 8.0, *) {
+			return fraction.formatted(
+				.percent
+					.precision(.fractionLength(decimalPlaces))
+					.locale(locale)
+			)
+		} else {
+			// Fallback for older OS versions
+			let formatter = NumberFormatter()
+			formatter.numberStyle = .percent
+			formatter.minimumFractionDigits = decimalPlaces
+			formatter.maximumFractionDigits = decimalPlaces
+			formatter.locale = locale
+			return formatter.string(for: fraction) ?? "\(String(format: "%g", rawValue))%"
+		}
 	}
 }
 
@@ -576,7 +593,16 @@ extension Percentage: CustomStringConvertible {
 	}()
 
 	public var description: String {
-		Self.formatter.string(for: fraction) ?? "\(String(format: "%g", rawValue))%"
+		if #available(macOS 12.0, iOS 15.0, tvOS 15.0, watchOS 8.0, *) {
+			// Use modern formatter with automatic precision
+			return fraction.formatted(
+				.percent
+					.locale(Self.formatter.locale ?? .current)
+			)
+		} else {
+			// Fall back to the static formatter
+			return Self.formatter.string(for: fraction) ?? "\(String(format: "%g", rawValue))%"
+		}
 	}
 }
 

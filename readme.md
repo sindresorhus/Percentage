@@ -89,6 +89,10 @@ Percentage.change(from: 100, to: 150)
 33.333%.formatted(decimalPlaces: 1)
 //=> "33.3%"
 
+// With locale (macOS 12.0+/iOS 15.0+)
+50%.formatted(decimalPlaces: 1, locale: Locale(languageCode: .french))
+//=> "50,0 %"
+
 print("\(1%)")
 //=> "1%"
 

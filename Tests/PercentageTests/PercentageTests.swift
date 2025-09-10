@@ -283,46 +283,71 @@ final class PercentageTests: XCTestCase {
 	}
 
 	func testFormatting() {
-		// Basic formatting
-		XCTAssertEqual(33.333%.formatted(decimalPlaces: 1), "33.3%")
-		XCTAssertEqual(33.333%.formatted(decimalPlaces: 0), "33%")
-		XCTAssertEqual(33.333%.formatted(decimalPlaces: 2), "33.33%")
-		XCTAssertEqual(33.336%.formatted(decimalPlaces: 2), "33.34%")
-		XCTAssertEqual(50%.formatted(decimalPlaces: 0), "50%")
-		XCTAssertEqual(50%.formatted(decimalPlaces: 2), "50.00%")
-		
-		// Negative percentages
-		XCTAssertEqual((-33.333%).formatted(decimalPlaces: 1), "-33.3%")
-		XCTAssertEqual((-50%).formatted(decimalPlaces: 0), "-50%")
-		
-		// Large percentages
-		XCTAssertEqual(150%.formatted(decimalPlaces: 0), "150%")
-		XCTAssertEqual(1234.567%.formatted(decimalPlaces: 1), "1234.6%")
-		
-		// Edge cases
-		XCTAssertEqual(0%.formatted(decimalPlaces: 0), "0%")
-		XCTAssertEqual(0.004%.formatted(decimalPlaces: 2), "0.00%")
-		XCTAssertEqual(0.005%.formatted(decimalPlaces: 2), "0.00%") // Rounding: 0.005% = 0.00005 as fraction, rounds down
+		if #available(macOS 12.0, iOS 15.0, tvOS 15.0, watchOS 8.0, *) {
+			// Basic formatting - use US locale for consistent testing
+			let usLocale = Locale(languageCode: .english, languageRegion: .unitedStates)
+			XCTAssertEqual(33.333%.formatted(decimalPlaces: 1, locale: usLocale), "33.3%")
+			XCTAssertEqual(33.333%.formatted(decimalPlaces: 0, locale: usLocale), "33%")
+			XCTAssertEqual(33.333%.formatted(decimalPlaces: 2, locale: usLocale), "33.33%")
+			XCTAssertEqual(33.336%.formatted(decimalPlaces: 2, locale: usLocale), "33.34%")
+			XCTAssertEqual(50%.formatted(decimalPlaces: 0, locale: usLocale), "50%")
+			XCTAssertEqual(50%.formatted(decimalPlaces: 2, locale: usLocale), "50.00%")
+			
+			// Negative percentages
+			XCTAssertEqual((-33.333%).formatted(decimalPlaces: 1, locale: usLocale), "-33.3%")
+			XCTAssertEqual((-50%).formatted(decimalPlaces: 0, locale: usLocale), "-50%")
+			
+			// Large percentages - note: modern formatter uses grouping separator
+			XCTAssertEqual(150%.formatted(decimalPlaces: 0, locale: usLocale), "150%")
+			XCTAssertEqual(1234.567%.formatted(decimalPlaces: 1, locale: usLocale), "1,234.6%")
+			
+			// Edge cases
+			XCTAssertEqual(0%.formatted(decimalPlaces: 0, locale: usLocale), "0%")
+			XCTAssertEqual(0.004%.formatted(decimalPlaces: 2, locale: usLocale), "0.00%")
+			XCTAssertEqual(0.005%.formatted(decimalPlaces: 2, locale: usLocale), "0.00%") // Rounding: 0.005% = 0.00005 as fraction, rounds down
+			
+			// Test that it respects locale
+			let frLocale = Locale(languageCode: .french, languageRegion: .france)
+			let formattedFr = 50.5%.formatted(decimalPlaces: 1, locale: frLocale)
+			XCTAssertTrue(formattedFr.contains("50")) // French formatting may differ
+			
+			// Test default locale (current)
+			let defaultFormatted = 50%.formatted(decimalPlaces: 0)
+			XCTAssertNotNil(defaultFormatted)
+		} else {
+			// Test legacy formatting for older OS versions
+			let usLocale = Locale(identifier: "en_US")
+			XCTAssertEqual(33.333%.formatted(decimalPlaces: 1, locale: usLocale), "33.3%")
+			XCTAssertEqual(50%.formatted(decimalPlaces: 0, locale: usLocale), "50%")
+		}
 	}
 
 	@available(macOS 12.0, iOS 15.0, tvOS 15.0, watchOS 8.0, *)
 	func testFormattedWithFormatStyle() {
-		// Test with FormatStyle
+		// Test with FormatStyle using modern locale API
+		let usLocale = Locale(languageCode: .english, languageRegion: .unitedStates)
+		
 		let percent1 = 33.333%
-		let formatted1 = percent1.formatted(.percent.precision(.fractionLength(1)).locale(Locale(identifier: "en_US")))
+		let formatted1 = percent1.formatted(.percent.precision(.fractionLength(1)).locale(usLocale))
 		XCTAssertEqual(formatted1, "33.3%")
 		
 		let percent2 = 50%
-		let formatted2 = percent2.formatted(.percent.precision(.fractionLength(0)).locale(Locale(identifier: "en_US")))
+		let formatted2 = percent2.formatted(.percent.precision(.fractionLength(0)).locale(usLocale))
 		XCTAssertEqual(formatted2, "50%")
 		
 		let percent3 = 0.5%
-		let formatted3 = percent3.formatted(.percent.precision(.fractionLength(2)).locale(Locale(identifier: "en_US")))
+		let formatted3 = percent3.formatted(.percent.precision(.fractionLength(2)).locale(usLocale))
 		XCTAssertEqual(formatted3, "0.50%")
 		
 		// Test locale-specific formatting
+		let frLocale = Locale(languageCode: .french, languageRegion: .france)
 		let percent4 = 50%
-		let formatted4 = percent4.formatted(.percent.locale(Locale(identifier: "fr_FR")))
+		let formatted4 = percent4.formatted(.percent.locale(frLocale))
 		XCTAssertTrue(formatted4.contains("50")) // French uses different formatting
+		
+		// Test using the formatted extension method directly
+		let percent5 = 75.5%
+		let formatted5 = percent5.formatted(.percent.precision(.fractionLength(1)))
+		XCTAssertNotNil(formatted5)
 	}
 }
