@@ -78,7 +78,7 @@ Percent.random(in: 10%...20%)
 //=> "14.3%"
 ```
 */
-public struct Percentage: Hashable, Codable {
+public struct Percentage: Hashable, Codable, Sendable {
 	/**
 	The raw percentage number.
 
@@ -151,7 +151,7 @@ public struct Percentage: Hashable, Codable {
 	```
 	*/
 	public init(_ percentage: some BinaryFloatingPoint) {
-		self.rawValue = Double(percentage)
+		self.init(rawValue: Double(percentage))
 	}
 
 	/**
@@ -164,7 +164,7 @@ public struct Percentage: Hashable, Codable {
 	```
 	*/
 	public init(_ percentage: some BinaryInteger) {
-		self.rawValue = Double(percentage)
+		self.init(rawValue: Double(percentage))
 	}
 
 	/**
@@ -176,7 +176,7 @@ public struct Percentage: Hashable, Codable {
 	```
 	*/
 	public init(fraction: Double) {
-		self.rawValue = fraction * 100
+		self.init(rawValue: fraction * 100)
 	}
 
 	/**
@@ -199,7 +199,9 @@ public struct Percentage: Hashable, Codable {
 	//=> 100.5
 	```
 	*/
-	public func of<ReturnValue: BinaryFloatingPoint>(_ value: some BinaryInteger) -> ReturnValue {
+	public func of<ReturnValue: BinaryFloatingPoint>(
+		_ value: some BinaryInteger
+	) -> ReturnValue {
 		ReturnValue(value) * ReturnValue(rawValue) / 100
 	}
 
@@ -240,7 +242,10 @@ extension Percentage {
 	//=> 25%
 	```
 	*/
-	public static func from(_ value: some BinaryInteger, of total: some BinaryInteger) -> Self {
+	public static func from(
+		_ value: some BinaryInteger,
+		of total: some BinaryInteger
+	) -> Self {
 		guard total != 0 else {
 			return self.init(0)
 		}
@@ -259,10 +264,14 @@ extension Percentage {
 	//=> 25%
 	```
 	*/
-	public static func from(_ value: some BinaryFloatingPoint, of total: some BinaryFloatingPoint) -> Self {
+	public static func from(
+		_ value: some BinaryFloatingPoint,
+		of total: some BinaryFloatingPoint
+	) -> Self {
 		guard total != 0 else {
 			return self.init(0)
 		}
+
 		return self.init(Double(value) / Double(total) * 100)
 	}
 
@@ -279,7 +288,9 @@ extension Percentage {
 	//=> 100
 	```
 	*/
-	public func originalValueBeforeIncrease(finalValue: some BinaryFloatingPoint) -> Double {
+	public func originalValueBeforeIncrease(
+		finalValue: some BinaryFloatingPoint
+	) -> Double {
 		Double(finalValue) / (1 + fraction)
 	}
 
@@ -296,7 +307,9 @@ extension Percentage {
 	//=> 100
 	```
 	*/
-	public func originalValueBeforeIncrease(finalValue: some BinaryInteger) -> Double {
+	public func originalValueBeforeIncrease(
+		finalValue: some BinaryInteger
+	) -> Double {
 		Double(finalValue) / (1 + fraction)
 	}
 
@@ -313,11 +326,14 @@ extension Percentage {
 	//=> 100
 	```
 	*/
-	public func originalValueBeforeDecrease(finalValue: some BinaryFloatingPoint) -> Double {
+	public func originalValueBeforeDecrease(
+		finalValue: some BinaryFloatingPoint
+	) -> Double {
 		guard fraction < 1 else {
 			// Cannot have a decrease of 100% or more
 			return .infinity
 		}
+
 		return Double(finalValue) / (1 - fraction)
 	}
 
@@ -334,11 +350,14 @@ extension Percentage {
 	//=> 100
 	```
 	*/
-	public func originalValueBeforeDecrease(finalValue: some BinaryInteger) -> Double {
+	public func originalValueBeforeDecrease(
+		finalValue: some BinaryInteger
+	) -> Double {
 		guard fraction < 1 else {
 			// Cannot have a decrease of 100% or more
 			return .infinity
 		}
+
 		return Double(finalValue) / (1 - fraction)
 	}
 
@@ -359,6 +378,7 @@ extension Percentage {
 		guard fraction != 0 else {
 			return .infinity
 		}
+
 		return Double(value) / fraction
 	}
 
@@ -379,6 +399,7 @@ extension Percentage {
 		guard fraction != 0 else {
 			return .infinity
 		}
+
 		return Double(value) / fraction
 	}
 
@@ -420,13 +441,18 @@ extension Percentage {
 	//=> 100%
 	```
 	*/
-	public static func change<T: BinaryInteger>(from originalValue: T, to newValue: T) -> Self {
+	public static func change<T: BinaryInteger>(
+		from originalValue: T,
+		to newValue: T
+	) -> Self {
 		guard originalValue != 0 else {
 			if newValue == 0 {
 				return self.init(0)
 			}
+
 			return self.init(Double.infinity)
 		}
+
 		let change = Double(Int(newValue) - Int(originalValue)) / Double(originalValue) * 100
 		return self.init(change)
 	}
@@ -442,13 +468,17 @@ extension Percentage {
 	//=> 50%
 	```
 	*/
-	public static func change(from originalValue: some BinaryFloatingPoint, to newValue: some BinaryFloatingPoint) -> Self {
+	public static func change(
+		from originalValue: some BinaryFloatingPoint,
+		to newValue: some BinaryFloatingPoint
+	) -> Self {
 		guard originalValue != 0 else {
 			if newValue == 0 {
 				return self.init(0)
 			}
 			return self.init(Double.infinity)
 		}
+
 		let change = (Double(newValue) - Double(originalValue)) / Double(originalValue) * 100
 		return self.init(change)
 	}
@@ -465,7 +495,7 @@ extension Percentage {
 
 	50%.formatted(decimalPlaces: 2)
 	//=> "50.00%"
-	
+
 	// With specific locale (macOS 12.0+/iOS 15.0+)
 	50.5%.formatted(decimalPlaces: 1, locale: Locale(languageCode: .french))
 	//=> "50,5 %" (French formatting)
@@ -503,7 +533,9 @@ extension Percentage {
 	//=> "50%"
 	```
 	*/
-	public func formatted<F: FormatStyle>(_ style: F) -> F.FormatOutput where F.FormatInput == Double {
+	public func formatted<F: FormatStyle>(
+		_ style: F
+	) -> F.FormatOutput where F.FormatInput == Double {
 		style.format(fraction)
 	}
 }
@@ -585,24 +617,8 @@ extension Percentage: Comparable {
 }
 
 extension Percentage: CustomStringConvertible {
-	// Note: It's a `var` for testing.
-	static var formatter: NumberFormatter = {
-		let formatter = NumberFormatter()
-		formatter.numberStyle = .percent
-		return formatter
-	}()
-
 	public var description: String {
-		if #available(macOS 12.0, iOS 15.0, tvOS 15.0, watchOS 8.0, *) {
-			// Use modern formatter with automatic precision
-			return fraction.formatted(
-				.percent
-					.locale(Self.formatter.locale ?? .current)
-			)
-		} else {
-			// Fall back to the static formatter
-			return Self.formatter.string(for: fraction) ?? "\(String(format: "%g", rawValue))%"
-		}
+		formatted(decimalPlaces: 2)
 	}
 }
 
@@ -626,13 +642,13 @@ public postfix func % (value: Int) -> Percentage {
 
 extension Percentage: ExpressibleByFloatLiteral {
 	public init(floatLiteral value: Double) {
-		self.rawValue = value
+		self.init(rawValue: value)
 	}
 }
 
 extension Percentage: ExpressibleByIntegerLiteral {
 	public init(integerLiteral value: Double) {
-		self.rawValue = value
+		self.init(rawValue: value)
 	}
 }
 
@@ -646,7 +662,6 @@ extension Percentage: Numeric {
 	}
 
 	public static func += (lhs: inout Self, rhs: Self) {
-		// swiftlint:disable:next shorthand_operator
 		lhs = lhs + rhs
 	}
 
@@ -655,7 +670,6 @@ extension Percentage: Numeric {
 	}
 
 	public static func -= (lhs: inout Self, rhs: Self) {
-		// swiftlint:disable:next shorthand_operator
 		lhs = lhs - rhs
 	}
 
@@ -664,7 +678,6 @@ extension Percentage: Numeric {
 	}
 
 	public static func *= (lhs: inout Self, rhs: Self) {
-		// swiftlint:disable:next shorthand_operator
 		lhs = lhs * rhs
 	}
 
@@ -685,7 +698,6 @@ extension Percentage {
 	}
 
 	public static func /= (lhs: inout Self, rhs: Self) {
-		// swiftlint:disable:next shorthand_operator
 		lhs = lhs / rhs
 	}
 }

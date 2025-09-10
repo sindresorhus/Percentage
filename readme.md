@@ -100,7 +100,7 @@ Percent.random(in: 10%...20%)
 //=> "14.3%"
 ```
 
-The type conforms to `Hashable`, `Codable`, `RawRepresentable`, `Comparable`, `ExpressibleByFloatLiteral`, `ExpressibleByIntegerLiteral`, `Numeric`, and supports all the arithmetic operators.
+The type conforms to `Hashable`, `Codable`, `RawRepresentable`, `Comparable`, `ExpressibleByFloatLiteral`, `ExpressibleByIntegerLiteral`, `Numeric`, `Sendable`, and supports all the arithmetic operators.
 
 ### Codable
 
