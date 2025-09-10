@@ -28,11 +28,44 @@ Percentage(50)
 Percentage(fraction: 0.5)
 //=> 50%
 
+Percentage.from(100, of: 200)
+//=> 50%
+
+Percentage.change(from: 100, to: 150)
+//=> 50%
+
 50%.fraction
 //=> 0.5
 
 10%.rawValue
 //=> 10
+
+50%.isWithinStandardRange
+//=> true
+
+150%.clamped(to: 0%...100%)
+//=> 100%
+
+110%.clampedZeroToHundred
+//=> 100%
+
+100.increased(by: 20%)
+//=> 120
+
+100.decreased(by: 20%)
+//=> 80
+
+40%.originalValueBeforeIncrease(finalValue: 120)
+//=> 85.71428571428571
+
+12%.originalValueBeforeDecrease(finalValue: 106)
+//=> 120.45454545454545
+
+90%.isPercentOf(67)
+//=> 74.44444444444444
+
+33.333%.formatted(decimalPlaces: 1)
+//=> "33.3%"
 
 print("\(1%)")
 //=> "1%"
@@ -84,6 +117,24 @@ public struct Percentage: Hashable, Codable {
 		} else {
 			self
 		}
+	}
+
+	/**
+	Check if the percentage is within the standard 0-100% range.
+
+	```
+	50%.isWithinStandardRange
+	//=> true
+
+	150%.isWithinStandardRange
+	//=> false
+
+	(-10%).isWithinStandardRange
+	//=> false
+	```
+	*/
+	public var isWithinStandardRange: Bool {
+		rawValue >= 0 && rawValue <= 100
 	}
 
 	/**
@@ -172,6 +223,335 @@ extension Percentage {
 	*/
 	public static func random(in range: ClosedRange<Self>) -> Self {
 		self.init(fraction: .random(in: range.lowerBound.fraction...range.upperBound.fraction))
+	}
+
+	/**
+	Create a `Percentage` from a value and a total.
+
+	```
+	Percentage.from(100, of: 200)
+	//=> 50%
+
+	Percentage.from(75, of: 300)
+	//=> 25%
+	```
+	*/
+	public static func from(_ value: some BinaryInteger, of total: some BinaryInteger) -> Self {
+		guard total != 0 else {
+			return self.init(0)
+		}
+		return self.init(Double(value) / Double(total) * 100)
+	}
+
+	/**
+	Create a `Percentage` from a value and a total.
+
+	```
+	Percentage.from(50.5, of: 101)
+	//=> 50%
+
+	Percentage.from(12.5, of: 50.0)
+	//=> 25%
+	```
+	*/
+	public static func from(_ value: some BinaryFloatingPoint, of total: some BinaryFloatingPoint) -> Self {
+		guard total != 0 else {
+			return self.init(0)
+		}
+		return self.init(Double(value) / Double(total) * 100)
+	}
+
+	/**
+	Find the original value before a percentage increase.
+
+	For example, if a value is 120 after a 40% increase, this returns the original value (85.714...).
+
+	```
+	40%.originalValueBeforeIncrease(finalValue: 120)
+	//=> 85.714...
+
+	50%.originalValueBeforeIncrease(finalValue: 150)
+	//=> 100
+	```
+	*/
+	public func originalValueBeforeIncrease(finalValue: some BinaryFloatingPoint) -> Double {
+		Double(finalValue) / (1 + fraction)
+	}
+
+	/**
+	Find the original value before a percentage increase.
+
+	For example, if a value is 120 after a 40% increase, this returns the original value (85.714...).
+
+	```
+	40%.originalValueBeforeIncrease(finalValue: 120)
+	//=> 85.714...
+
+	50%.originalValueBeforeIncrease(finalValue: 150)
+	//=> 100
+	```
+	*/
+	public func originalValueBeforeIncrease(finalValue: some BinaryInteger) -> Double {
+		Double(finalValue) / (1 + fraction)
+	}
+
+	/**
+	Find the original value before a percentage decrease.
+
+	For example, if a value is 106 after a 12% decrease, this returns the original value (120.454...).
+
+	```
+	12%.originalValueBeforeDecrease(finalValue: 106)
+	//=> 120.454...
+
+	20%.originalValueBeforeDecrease(finalValue: 80)
+	//=> 100
+	```
+	*/
+	public func originalValueBeforeDecrease(finalValue: some BinaryFloatingPoint) -> Double {
+		guard fraction < 1 else {
+			// Cannot have a decrease of 100% or more
+			return .infinity
+		}
+		return Double(finalValue) / (1 - fraction)
+	}
+
+	/**
+	Find the original value before a percentage decrease.
+
+	For example, if a value is 106 after a 12% decrease, this returns the original value (120.454...).
+
+	```
+	12%.originalValueBeforeDecrease(finalValue: 106)
+	//=> 120.454...
+
+	20%.originalValueBeforeDecrease(finalValue: 80)
+	//=> 100
+	```
+	*/
+	public func originalValueBeforeDecrease(finalValue: some BinaryInteger) -> Double {
+		guard fraction < 1 else {
+			// Cannot have a decrease of 100% or more
+			return .infinity
+		}
+		return Double(finalValue) / (1 - fraction)
+	}
+
+	/**
+	Find what value this percentage is of.
+
+	For example, "67 is 90% of what?" returns 74.444...
+
+	```
+	90%.isPercentOf(67)
+	//=> 74.444...
+
+	50%.isPercentOf(50)
+	//=> 100
+	```
+	*/
+	public func isPercentOf(_ value: some BinaryFloatingPoint) -> Double {
+		guard fraction != 0 else {
+			return .infinity
+		}
+		return Double(value) / fraction
+	}
+
+	/**
+	Find what value this percentage is of.
+
+	For example, "67 is 90% of what?" returns 74.444...
+
+	```
+	90%.isPercentOf(67)
+	//=> 74.444...
+
+	50%.isPercentOf(50)
+	//=> 100
+	```
+	*/
+	public func isPercentOf(_ value: some BinaryInteger) -> Double {
+		guard fraction != 0 else {
+			return .infinity
+		}
+		return Double(value) / fraction
+	}
+
+	/**
+	Clamp the percentage to a specific range.
+
+	```
+	150%.clamped(to: 0%...100%)
+	//=> 100%
+
+	(-50%).clamped(to: 0%...100%)
+	//=> 0%
+
+	50%.clamped(to: 25%...75%)
+	//=> 50%
+	```
+	*/
+	public func clamped(to range: ClosedRange<Self>) -> Self {
+		if self < range.lowerBound {
+			return range.lowerBound
+		} else if self > range.upperBound {
+			return range.upperBound
+		} else {
+			return self
+		}
+	}
+
+	/**
+	Calculate the percentage change between two values.
+
+	```
+	Percentage.change(from: 100, to: 150)
+	//=> 50%
+
+	Percentage.change(from: 150, to: 100)
+	//=> -33.33%
+
+	Percentage.change(from: 100, to: 200)
+	//=> 100%
+	```
+	*/
+	public static func change<T: BinaryInteger>(from originalValue: T, to newValue: T) -> Self {
+		guard originalValue != 0 else {
+			if newValue == 0 {
+				return self.init(0)
+			}
+			return self.init(Double.infinity)
+		}
+		let change = Double(Int(newValue) - Int(originalValue)) / Double(originalValue) * 100
+		return self.init(change)
+	}
+
+	/**
+	Calculate the percentage change between two values.
+
+	```
+	Percentage.change(from: 100.0, to: 150.0)
+	//=> 50%
+
+	Percentage.change(from: 50.5, to: 75.75)
+	//=> 50%
+	```
+	*/
+	public static func change(from originalValue: some BinaryFloatingPoint, to newValue: some BinaryFloatingPoint) -> Self {
+		guard originalValue != 0 else {
+			if newValue == 0 {
+				return self.init(0)
+			}
+			return self.init(Double.infinity)
+		}
+		let change = (Double(newValue) - Double(originalValue)) / Double(originalValue) * 100
+		return self.init(change)
+	}
+
+	/**
+	Format the percentage with a specific number of decimal places.
+
+	```
+	33.333%.formatted(decimalPlaces: 1)
+	//=> "33.3%"
+
+	33.333%.formatted(decimalPlaces: 0)
+	//=> "33%"
+
+	50%.formatted(decimalPlaces: 2)
+	//=> "50.00%"
+	```
+	*/
+	public func formatted(decimalPlaces: Int) -> String {
+		let formatter = NumberFormatter()
+		formatter.numberStyle = .percent
+		formatter.minimumFractionDigits = decimalPlaces
+		formatter.maximumFractionDigits = decimalPlaces
+		formatter.locale = Locale(identifier: "en_US")
+		formatter.usesGroupingSeparator = false
+		return formatter.string(for: fraction) ?? "\(String(format: "%g", rawValue))%"
+	}
+}
+
+@available(macOS 12.0, iOS 15.0, tvOS 15.0, watchOS 8.0, *)
+extension Percentage {
+	/**
+	Format the percentage using a FormatStyle.
+
+	```
+	33.333%.formatted(.percent.precision(.fractionLength(1)))
+	//=> "33.3%"
+
+	50%.formatted(.percent.precision(.fractionLength(0)))
+	//=> "50%"
+	```
+	*/
+	public func formatted<F: FormatStyle>(_ style: F) -> F.FormatOutput where F.FormatInput == Double {
+		style.format(fraction)
+	}
+}
+
+extension BinaryInteger {
+	/**
+	Increase the value by a percentage.
+
+	```
+	100.increased(by: 20%)
+	//=> 120
+
+	50.increased(by: 100%)
+	//=> 100
+	```
+	*/
+	public func increased(by percentage: Percentage) -> Self {
+		self + percentage.of(self)
+	}
+
+	/**
+	Decrease the value by a percentage.
+
+	```
+	100.decreased(by: 20%)
+	//=> 80
+
+	50.decreased(by: 50%)
+	//=> 25
+	```
+	*/
+	public func decreased(by percentage: Percentage) -> Self {
+		self - percentage.of(self)
+	}
+}
+
+extension BinaryFloatingPoint {
+	/**
+	Increase the value by a percentage.
+
+	```
+	100.0.increased(by: 20%)
+	//=> 120.0
+
+	50.5.increased(by: 100%)
+	//=> 101.0
+	```
+	*/
+	public func increased(by percentage: Percentage) -> Self {
+		self + percentage.of(self)
+	}
+
+	/**
+	Decrease the value by a percentage.
+
+	```
+	100.0.decreased(by: 20%)
+	//=> 80.0
+
+	50.5.decreased(by: 50%)
+	//=> 25.25
+	```
+	*/
+	public func decreased(by percentage: Percentage) -> Self {
+		self - percentage.of(self)
 	}
 }
 

@@ -50,14 +50,44 @@ Percentage(50)
 Percentage(fraction: 0.5)
 //=> 50%
 
+Percentage.from(100, of: 200)
+//=> 50%
+
+Percentage.change(from: 100, to: 150)
+//=> 50%
+
 50%.fraction
 //=> 0.5
 
 10%.rawValue
 //=> 10
 
+50%.isWithinStandardRange
+//=> true
+
+150%.clamped(to: 0%...100%)
+//=> 100%
+
 110%.clampedZeroToHundred
 //=> 100%
+
+100.increased(by: 20%)
+//=> 120
+
+100.decreased(by: 20%)
+//=> 80
+
+40%.originalValueBeforeIncrease(finalValue: 120)
+//=> 85.71428571428571
+
+12%.originalValueBeforeDecrease(finalValue: 106)
+//=> 120.45454545454545
+
+90%.isPercentOf(67)
+//=> 74.44444444444444
+
+33.333%.formatted(decimalPlaces: 1)
+//=> "33.3%"
 
 print("\(1%)")
 //=> "1%"
