@@ -1,6 +1,7 @@
 import Testing
 import Foundation
 import CoreGraphics
+import SwiftUI
 @testable import Percentage
 
 struct PercentageTests {
@@ -586,6 +587,41 @@ struct PercentageTests {
 		let set: Set = [p1, p2, p3]
 		#expect(set.count == 2) // p1 and p2 should be considered equal
 	}
+
+	@Test
+	func swiftUIOverloads() {
+		// Verify these compile - the overloads convert percentage.fraction to Double
+		let view = Text("Test")
+			.opacity(45%)
+			.brightness(20%)
+			.contrast(80%)
+			.saturation(50%)
+			.grayscale(100%)
+		_ = view
+
+		// Color opacity
+		let color = Color.red.opacity(50%)
+		_ = color
+
+		// ShapeStyle opacity
+		if #available(macOS 12.0, iOS 15.0, tvOS 15.0, watchOS 8.0, *) {
+			let style = Color.blue.opacity(75%)
+			_ = style
+		}
+	}
+
+	#if canImport(AppKit) && !targetEnvironment(macCatalyst)
+	@Test
+	func nsColorOverload() {
+		let color = NSColor.red.withAlphaComponent(50%)
+		var red: CGFloat = 0
+		var green: CGFloat = 0
+		var blue: CGFloat = 0
+		var alpha: CGFloat = 0
+		color.getRed(&red, green: &green, blue: &blue, alpha: &alpha)
+		#expect(abs(alpha - 0.5) < 0.01)
+	}
+	#endif
 
 	@Test
 	func literalConformances() {

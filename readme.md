@@ -99,6 +99,32 @@ Percentage.random(in: 10%...20%)
 
 The type conforms to `Hashable`, `Codable`, `RawRepresentable`, `Comparable`, `ExpressibleByFloatLiteral`, `ExpressibleByIntegerLiteral`, `Numeric`, `Sendable`, and supports all the arithmetic operators.
 
+### SwiftUI and Cocoa overloads
+
+Percentage overloads common SwiftUI and Cocoa APIs that accept a fraction `Double`, so you can pass a percentage directly:
+
+```swift
+// SwiftUI View modifiers
+Text("Hello")
+	.opacity(45%)
+	.brightness(20%)
+	.contrast(80%)
+	.saturation(50%)
+	.grayscale(100%)
+
+// Color and ShapeStyle
+Color.red.opacity(50%)
+
+Rectangle()
+	.fill(.red.opacity(50%))
+
+// UIKit
+UIColor.red.withAlphaComponent(50%)
+
+// AppKit
+NSColor.red.withAlphaComponent(50%)
+```
+
 ### Codable
 
 The percentage value is encoded as a single value:

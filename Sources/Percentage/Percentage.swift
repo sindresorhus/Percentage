@@ -785,3 +785,142 @@ extension Percentage {
 		lhs = lhs / rhs
 	}
 }
+
+#if canImport(SwiftUI)
+import SwiftUI
+
+@available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
+extension View {
+	/**
+	Sets the transparency of this view.
+
+	```
+	Text("Hello")
+		.opacity(45%)
+	```
+	*/
+	@inlinable
+	public func opacity(_ percentage: Percentage) -> some View {
+		opacity(percentage.fraction)
+	}
+
+	/**
+	Brightens this view by the given percentage.
+
+	```
+	Text("Hello")
+		.brightness(20%)
+	```
+	*/
+	@inlinable
+	public func brightness(_ percentage: Percentage) -> some View {
+		brightness(percentage.fraction)
+	}
+
+	/**
+	Sets the contrast for this view.
+
+	```
+	Text("Hello")
+		.contrast(80%)
+	```
+	*/
+	@inlinable
+	public func contrast(_ percentage: Percentage) -> some View {
+		contrast(percentage.fraction)
+	}
+
+	/**
+	Adjusts the color saturation of this view.
+
+	```
+	Text("Hello")
+		.saturation(50%)
+	```
+	*/
+	@inlinable
+	public func saturation(_ percentage: Percentage) -> some View {
+		saturation(percentage.fraction)
+	}
+
+	/**
+	Adds a grayscale effect to this view.
+
+	```
+	Text("Hello")
+		.grayscale(100%)
+	```
+	*/
+	@inlinable
+	public func grayscale(_ percentage: Percentage) -> some View {
+		grayscale(percentage.fraction)
+	}
+}
+
+@available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
+extension Color {
+	/**
+	Multiplies the opacity of the color by the given percentage.
+
+	```
+	Color.red.opacity(50%)
+	```
+	*/
+	@inlinable
+	public func opacity(_ percentage: Percentage) -> Color {
+		opacity(percentage.fraction)
+	}
+}
+
+@available(macOS 12.0, iOS 15.0, tvOS 15.0, watchOS 8.0, *)
+extension ShapeStyle {
+	/**
+	Multiplies the opacity of the shape style by the given percentage.
+
+	```
+	Rectangle()
+		.fill(.red.opacity(50%))
+	```
+	*/
+	@inlinable
+	public func opacity(_ percentage: Percentage) -> some ShapeStyle {
+		opacity(percentage.fraction)
+	}
+}
+#endif
+
+#if canImport(UIKit)
+import UIKit
+
+extension UIColor {
+	/**
+	Creates a new color with the given alpha component as a percentage.
+
+	```
+	UIColor.red.withAlphaComponent(50%)
+	```
+	*/
+	@inlinable
+	public func withAlphaComponent(_ percentage: Percentage) -> UIColor {
+		withAlphaComponent(percentage.fraction)
+	}
+}
+#endif
+
+#if canImport(AppKit) && !targetEnvironment(macCatalyst)
+import AppKit
+
+extension NSColor {
+	/**
+	Creates a new color with the given alpha component as a percentage.
+
+	```
+	NSColor.red.withAlphaComponent(50%)
+	```
+	*/
+	@inlinable
+	public func withAlphaComponent(_ percentage: Percentage) -> NSColor {
+		withAlphaComponent(percentage.fraction)
+	}
+}
+#endif
