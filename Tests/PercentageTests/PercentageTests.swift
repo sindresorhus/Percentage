@@ -588,6 +588,7 @@ struct PercentageTests {
 		#expect(set.count == 2) // p1 and p2 should be considered equal
 	}
 
+	@MainActor
 	@Test
 	func swiftUIOverloads() {
 		// Verify these compile - the overloads convert percentage.fraction to Double
