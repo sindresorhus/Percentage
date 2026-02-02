@@ -35,9 +35,6 @@ import Percentage
 (40% + 93%) * 3
 //=> 399%
 
-50% * 50%
-//=> 25%
-
 30% > 25%
 //=> true
 
@@ -96,7 +93,7 @@ Percentage.change(from: 100, to: 150)
 print("\(1%)")
 //=> "1%"
 
-Percent.random(in: 10%...20%)
+Percentage.random(in: 10%...20%)
 //=> "14.3%"
 ```
 

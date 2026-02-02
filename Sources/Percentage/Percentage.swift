@@ -13,9 +13,6 @@ import Percentage
 (40% + 93%) * 3
 //=> 399%
 
-50% * 50%
-//=> 25%
-
 30% > 25%
 //=> true
 
@@ -74,7 +71,7 @@ Percentage.change(from: 100, to: 150)
 print("\(1%)")
 //=> "1%"
 
-Percent.random(in: 10%...20%)
+Percentage.random(in: 10%...20%)
 //=> "14.3%"
 ```
 */
@@ -223,7 +220,7 @@ extension Percentage {
 	Returns a random value within the given range.
 
 	```
-	Percent.random(in: 10%...20%)
+	Percentage.random(in: 10%...20%)
 	//=> Can be 10%, 11%, 12%, 19.98%, etc.
 	```
 	*/
@@ -631,22 +628,24 @@ public prefix func - (percentage: Percentage) -> Percentage {
 
 postfix operator %
 
-public postfix func % (value: Double) -> Percentage {
-	Percentage(value)
+public postfix func % (value: Int) -> Percentage {
+	Percentage(Double(value))
 }
 
-public postfix func % (value: Int) -> Percentage {
+public postfix func % (value: some BinaryFloatingPoint) -> Percentage {
 	Percentage(Double(value))
 }
 // swiftlint:enable static_operator
 
 extension Percentage: ExpressibleByFloatLiteral {
+	@_disfavoredOverload
 	public init(floatLiteral value: Double) {
 		self.init(rawValue: value)
 	}
 }
 
 extension Percentage: ExpressibleByIntegerLiteral {
+	@_disfavoredOverload
 	public init(integerLiteral value: Double) {
 		self.init(rawValue: value)
 	}
@@ -673,10 +672,13 @@ extension Percentage: Numeric {
 		lhs = lhs - rhs
 	}
 
+	// Uses fraction multiplication for percent-to-percent math.
+	@_disfavoredOverload
 	public static func * (lhs: Self, rhs: Self) -> Self {
 		self.init(fraction: lhs.fraction * rhs.fraction)
 	}
 
+	@_disfavoredOverload
 	public static func *= (lhs: inout Self, rhs: Self) {
 		lhs = lhs * rhs
 	}
@@ -693,11 +695,93 @@ extension Percentage: Numeric {
 }
 
 extension Percentage {
+	public static func * (lhs: Self, rhs: Int) -> Self {
+		self.init(lhs.rawValue * Double(rhs))
+	}
+
+	public static func * (lhs: Int, rhs: Self) -> Self {
+		self.init(Double(lhs) * rhs.rawValue)
+	}
+
+	public static func * (lhs: Self, rhs: Double) -> Self {
+		self.init(lhs.rawValue * rhs)
+	}
+
+	public static func * (lhs: Double, rhs: Self) -> Self {
+		self.init(lhs * rhs.rawValue)
+	}
+
+	public static func * (lhs: Self, rhs: some BinaryInteger) -> Self {
+		self.init(lhs.rawValue * Double(rhs))
+	}
+
+	public static func * (lhs: some BinaryInteger, rhs: Self) -> Self {
+		self.init(Double(lhs) * rhs.rawValue)
+	}
+
+	public static func * (lhs: Self, rhs: some BinaryFloatingPoint) -> Self {
+		self.init(lhs.rawValue * Double(rhs))
+	}
+
+	public static func * (lhs: some BinaryFloatingPoint, rhs: Self) -> Self {
+		self.init(Double(lhs) * rhs.rawValue)
+	}
+
+	public static func *= (lhs: inout Self, rhs: Int) {
+		lhs = lhs * rhs
+	}
+
+	public static func *= (lhs: inout Self, rhs: Double) {
+		lhs = lhs * rhs
+	}
+
+	public static func *= (lhs: inout Self, rhs: some BinaryInteger) {
+		lhs = lhs * rhs
+	}
+
+	public static func *= (lhs: inout Self, rhs: some BinaryFloatingPoint) {
+		lhs = lhs * rhs
+	}
+
+	@_disfavoredOverload
 	public static func / (lhs: Self, rhs: Self) -> Self {
 		self.init(fraction: lhs.fraction / rhs.fraction)
 	}
 
+	@_disfavoredOverload
 	public static func /= (lhs: inout Self, rhs: Self) {
+		lhs = lhs / rhs
+	}
+
+	public static func / (lhs: Self, rhs: Int) -> Self {
+		self.init(lhs.rawValue / Double(rhs))
+	}
+
+	public static func / (lhs: Self, rhs: Double) -> Self {
+		self.init(lhs.rawValue / rhs)
+	}
+
+	public static func / (lhs: Self, rhs: some BinaryInteger) -> Self {
+		self.init(lhs.rawValue / Double(rhs))
+	}
+
+	public static func / (lhs: Self, rhs: some BinaryFloatingPoint) -> Self {
+		self.init(lhs.rawValue / Double(rhs))
+	}
+
+	public static func /= (lhs: inout Self, rhs: Int) {
+		lhs = lhs / rhs
+	}
+
+	public static func /= (lhs: inout Self, rhs: Double) {
+		lhs = lhs / rhs
+	}
+
+	public static func /= (lhs: inout Self, rhs: some BinaryInteger) {
+		lhs = lhs / rhs
+	}
+
+	public static func /= (lhs: inout Self, rhs: some BinaryFloatingPoint) {
 		lhs = lhs / rhs
 	}
 }

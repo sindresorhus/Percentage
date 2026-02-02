@@ -9,8 +9,8 @@ struct PercentageTests {
 		#expect(10% == 10%) // swiftlint:disable:this identical_operands
 		#expect(1.1%.rawValue == 1.1)
 		#expect(10% + 5.5% == 15.5%)
-		#expect(50% * 50% == 25%)
-		#expect(50% / 50% == 100%)
+		#expect(10% * 2 == 20%)
+		#expect(-10% / 2 == -5%)
 		#expect(50%.of(200) == 100)
 		#expect(Percentage(50.5) == 50.5%)
 		#expect(Percentage(rawValue: 50.5) == 50.5%)
@@ -53,6 +53,7 @@ struct PercentageTests {
 	func arithmetics() {
 		#expect(1% + 1% == 2%)
 		#expect(1% - 1% == 0%)
+		#expect(50% * 50% == 25%)
 		#expect(20% / 10% == 200%)
 	}
 
@@ -89,7 +90,109 @@ struct PercentageTests {
 
 		var divide = 20%
 		divide /= 10
-		#expect(divide == 200%)
+		#expect(divide == 2%)
+	}
+
+	@Test
+	func scalarMultiplication() {
+		#expect(10% * 2 == 20%)
+		#expect(3 * 50% == 150%)
+		#expect((40% + 93%) * 3 == 399%)
+
+		// Double scalar
+		#expect(10% * 2.5 == 25%)
+		#expect(2.5 * 10% == 25%)
+
+		// Typed Int variable
+		let intScalar: Int = 3
+		#expect(10% * intScalar == 30%)
+		#expect(intScalar * 10% == 30%)
+
+		// Typed Double variable
+		let doubleScalar: Double = 2.5
+		#expect(10% * doubleScalar == 25%)
+		#expect(doubleScalar * 10% == 25%)
+
+		// Other BinaryInteger types
+		let int8Scalar: Int8 = 4
+		#expect(10% * int8Scalar == 40%)
+		#expect(int8Scalar * 10% == 40%)
+
+		// Other BinaryFloatingPoint types
+		let floatScalar: Float = 3.0
+		#expect(10% * floatScalar == 30%)
+		#expect(floatScalar * 10% == 30%)
+
+		let cgFloatScalar: CGFloat = 2.0
+		#expect(10% * cgFloatScalar == 20%)
+		#expect(cgFloatScalar * 10% == 20%)
+	}
+
+	@Test
+	func scalarDivision() {
+		#expect(-10% / 2 == -5%)
+		#expect(100% / 4 == 25%)
+		#expect(75% / 2.5 == 30%)
+
+		// Typed Int variable
+		let intScalar: Int = 4
+		#expect(100% / intScalar == 25%)
+
+		// Typed Double variable
+		let doubleScalar: Double = 2.5
+		#expect(75% / doubleScalar == 30%)
+
+		// Other BinaryInteger types
+		let int8Scalar: Int8 = 2
+		#expect(50% / int8Scalar == 25%)
+
+		// Other BinaryFloatingPoint types
+		let floatScalar: Float = 4.0
+		#expect(100% / floatScalar == 25%)
+	}
+
+	@Test
+	func scalarCompoundAssignment() {
+		var value = 10%
+		value *= 3
+		#expect(value == 30%)
+
+		value = 10%
+		let intScalar: Int = 5
+		value *= intScalar
+		#expect(value == 50%)
+
+		value = 10%
+		let doubleScalar: Double = 2.5
+		value *= doubleScalar
+		#expect(value == 25%)
+
+		value = 10%
+		let int8Scalar: Int8 = 3
+		value *= int8Scalar
+		#expect(value == 30%)
+
+		value = 100%
+		value /= 4
+		#expect(value == 25%)
+
+		value = 100%
+		value /= intScalar
+		#expect(value == 20%)
+
+		value = 75%
+		value /= doubleScalar
+		#expect(value == 30%)
+
+		value = 90%
+		value /= int8Scalar
+		#expect(value == 30%)
+	}
+
+	@Test
+	func percentOperatorWithFloatingPoint() {
+		let cgFloat: CGFloat = 25.0
+		#expect(cgFloat% == 25%)
 	}
 
 	@Test
@@ -414,13 +517,14 @@ struct PercentageTests {
 		// Test all arithmetic operators comprehensively
 		#expect(50% + 25% == 75%)
 		#expect(75% - 25% == 50%)
-		#expect(50% * 2% == 1%)  // 50% * 2% = 1% (0.5 * 0.02 = 0.01)
-		#expect(100% / 50% == 200%) // 100% / 50% = 2 (1.0 / 0.5 = 2.0)
+		#expect(50% * 2 == 100%)
+		#expect(100% / 2 == 50%)
 
 		// Test with zero
 		#expect(50% + 0% == 50%)
 		#expect(50% - 0% == 50%)
 		#expect(50% * 0% == 0%)
+		#expect(50% * 50% == 25%)
 
 		// Test negative arithmetic
 		#expect(50% + (-25%) == 25%)
@@ -510,8 +614,8 @@ struct PercentageTests {
 		mutable -= 25%
 		#expect(mutable == 50%)
 
-		mutable *= 2%
-		#expect(mutable == 1%) // 50% * 2% = 1% (0.5 * 0.02 = 0.01)
+		mutable *= 2
+		#expect(mutable == 100%)
 
 		// Test magnitude
 		#expect(50%.magnitude == 50.0)
